@@ -1,0 +1,14 @@
+    <div class="card my-3 col-12 col-md-6">
+        <div class="card-header">
+            <img src="{{ post.user.profile_image.url }}" alt="" class="rounded-circle" width="30px">
+            <a href="{% url 'accounts:profile' username=post.user %}" class="text-reset text-decoration-none">
+                {{ post.user }}
+            </a>
+        </div>
+    
+        <img src="{{ post.image.url }}" alt="">
+        <div class="card-body">
+            <i class="bi bi-heart"></i>
+            <p class="card-text">{{ post.content }}</p>
+        </div>
+    </div>

@@ -9,3 +9,4 @@ class CustumUserCreationForm(UserCreationForm):
 
 class CustumAuthenticationForm(AuthenticationForm):
     pass
+

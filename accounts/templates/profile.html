@@ -3,22 +3,44 @@
 {% block body %}
     <div class="row">
         <div class="col-4">
-            <img src="{{ user_info.profile_image.url }}" alt="" class="rounded-circle img-fluid">
+            {% if user_info.profile_image %}
+            <img src="{{ user_info.profile_image.url }}" alt="" class="rounded-circle mb-3 mt-3 img-fluid">
+            {% else %}
+            <img src="/media/profile/default.jpeg" alt="" class="rounded-circle mt-3 mb-3 img-fluid">
+            {% endif%} 
         </div>
-        <div class="col-8">
+        <div class="col-8 py-4">
             <div class="row">
-                {{ user_info }}
-                <a href="" class="btn btn-light">Follow</a>
+                <div class="col-8 d-flex justify-content-center align-items-center text-center">
+                    <span class="font-weight-bold" style="font-size: 24px;">{{ user_info }}</span>
+                </div>
+                
+
+                <!-- user : 로그인한사람 -->
+                <!-- user_info : 현재 프로필페이지 유저 -->
+                {% if user != user_info %}
+                <div class="col-4 d-flex justify-content-center">
+                    {% if user in user_info.followers.all %}
+                        <a href="{% url 'accounts:follows' username=user_info %}" class="btn btn-primary">팔로잉</a>
+                    {% else %}
+                        <a href="{% url 'accounts:follows' username=user_info %}" class="btn btn-secondary">팔로우</a>
+                    {% endif %}
+                </div>
+                {% endif %}
+
             </div>
             <div class="row">
-                <div class="col">게시물 {{ user_info.post_set.all|length }}</div>
-                <div class="col">팔로워</div>
-                <div class="col">팔로우</div>
+                <div class="col d-flex justify-content-center py-4">게시물 {{ user_info.post_set.all|length }}</div>
+                <div class="col d-flex justify-content-center py-4">팔로워 {{ user_info.followers.all|length }}</div>
+                <div class="col d-flex justify-content-center py-4">팔로우 {{ user_info.followings.all|length }}</div>
             </div>
         </div>
     </div>
-    <div class="row row-cols-3">
+    <div class="row row-cols-3 py-3">
         {% for post in user_info.post_set.all %}
+        <style>
+            .col {margin-bottom: 24px;}
+        </style>
             <div class="col">
                 <div class="card">
                     <img src="{{ post.image.url }}" alt="">

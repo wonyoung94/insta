@@ -4,12 +4,12 @@
 
 
 <div class="card mb-3" style="max-width: 540px;">
-    <div class="row g-0">
-      <div class="col-md-4">
+    <div class="row g-0" style="padding: 20px;">
+      <div class="col-md-5" style="margin-right: 40px;">
         <img src="{{ post.image.url }}" class="img-fluid rounded-center" alt="" style="margin: 10px;">
       </div>
-      <div class="col-md-8">
-        <div class="card-body">
+      <div class="col-md-6 ml-5">
+        <div class="card-body mb-3">
             <div style="display: flex; align-items: flex-end; margin-top: 3px; margin-bottom: 3px;">
             {% if post.user.profile_image %}
             <img src="{{ post.user.profile_image.url }}" alt="" class="rounded-circle" width="30px">
@@ -24,26 +24,50 @@
         </div>
         
         <hr>
-        <!-- 댓글 구현하기 -->
-        {% if user.is_authenticated %}
-
-        <form action="{% url 'posts:comment_create' post_id=post.id %}" method="POST">
-            {% csrf_token %}
-            {% bootstrap_form form %}
-            <input type="submit" class="btn btn-primary">
-        </form>
-        {% endif %}
-        
-        <!-- 딜리트 구현 하기 : 전혀 안되는중-->
-        {% for comment in post.comment_set.all %}
-            <div class="alert alert-light">
-                {{ comment.user }} : {{ comment.content }}
-                {% if user == comment.user %}
-                <a class="btn btn-danger btn-sm" href="{% url 'posts:comment_delete' post_id=article.id id=comment.id %}">delete</a>
-                {% endif %}
+        {% if comments %}
+        <div class="card mt-3">
+            <div class="card-body">
+                <h5 class="card-title">Comments</h5>
+                <ul class="list-group">
+                    {% for comment in comments %}
+                        <li class="list-group-item">
+                            <div style="display: flex; align-items: center;">
+                                {% if comment.user.profile_image %}
+                                    <img src="{{ comment.user.profile_image.url }}" alt="" class="rounded-circle" width="30px">
+                                {% else %}
+                                    <img src="/media/profile/default.jpeg" alt="" class="rounded-circle" width="30px">
+                                {% endif %}
+                                <span style="margin-left: 10px;">
+                                    <a href="{% url 'accounts:profile' username=comment.user %}" class="text-reset text-decoration-none">
+                                        {{ comment.user }}
+                                    </a>
+                                </span>
+                            </div>
+                            <p>{{ comment.text }}</p>
+                        </li>
+                    {% endfor %}
+                </ul>
             </div>
-    
-        {% endfor %}
+        </div>
+    {% else %}
+        <p>첫 댓글을 작성해주세요.</p>
+    {% endif %}
+        <hr>
+          {% if user.is_authenticated %}
+              <div class="card mt-3">
+                  <div class="card-body">
+                      <form action="{% url 'posts:comment_create' post_id=post.id %}" method="POST">
+                          {% csrf_token %}
+                          <div class="form-group">
+                              <label for="{{ form.comment.id_for_label }}">Comment</label>
+                              <textarea name="{{ form.comment.name }}" id="{{ form.comment.id_for_label }}"
+                                        class="form-control" rows="3">{{ form.comment.value }}</textarea>
+                          </div>
+                          <button type="submit" class="btn btn-primary" style="float:right; margin-top:10px;">Comment</button>
+                      </form>
+                  </div>
+              </div>
+          {% endif %}   
       </div>
     </div>
   </div>
